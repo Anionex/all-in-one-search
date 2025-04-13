@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多引擎搜索</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .search-container {
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        #searchInput {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4642c2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .preview-card {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .preview-button {
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            background: #7e97dd;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 2s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>多引擎搜索</h1>
+        <input type="text" id="searchInput" placeholder="请输入你的问题和需求">
+        <button onclick="multiSearch()">搜索</button>
+    </div>
+    <div class="preview-container">
+        <div class="preview-card">
+            <h3>MetaSo</h3>
+            <p>元搜索引擎，整合多个搜索源的结果</p>
+            <button class="preview-button" onclick="openMetaso()">打开 MetaSo</button>
+        </div>
+        <div class="preview-card">
+            <h3>Perplexity</h3>
+            <p>AI 驱动的智能搜索引擎</p>
+            <button class="preview-button" onclick="openPerplexity()">打开 Perplexity</button>
+        </div>
+        <div class="preview-card">
+            <h3>ChatGLM</h3>
+            <p>智能对话模型</p>
+            <button class="preview-button" onclick="openChatGLM()">打开 ChatGLM</button>
+        </div>
+    </div>
+
+    <script>
+        let searchTerm = '';
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // 2.5秒后移除通知
+            setTimeout(() => {
+                notification.remove();
+            }, 2500);
+        }
+
+        function copyAndNotify(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification(`已复制：${text}`);
+            }).catch(err => {
+                showNotification(`已复制：${text}`);
+            });
+        }
+
+        function multiSearch() {
+            searchTerm = document.getElementById('searchInput').value;
+            if (!searchTerm.trim()) {
+                alert('请输入搜索关键词！');
+                return;
+            }
+            
+            copyAndNotify(searchTerm);  // 添加复制功能
+            
+            // 依次打开搜索页面，添加小延迟
+            setTimeout(openMetaso, 0);
+            setTimeout(openPerplexity, 100);
+            setTimeout(openChatGLM, 200);
+        }
+
+        function openMetaso() {
+            if (!searchTerm.trim()) return;
+            copyAndNotify(searchTerm);  // 添加复制功能
+            const url = `https://metaso.cn/?q=${encodeURIComponent(searchTerm)}`;
+            window.open(url, 'metaso_search');
+        }
+
+        function openPerplexity() {
+            if (!searchTerm.trim()) return;
+            copyAndNotify(searchTerm);  // 添加复制功能
+            const url = `https://www.perplexity.ai/?q=${encodeURIComponent(searchTerm)}&copilot=true`;
+            window.open(url, 'perplexity_search');
+        }
+
+        function openChatGLM() {
+            if (!searchTerm.trim()) return;
+            copyAndNotify(searchTerm);  // 添加复制功能
+            const url = `https://chatglm.cn/main/gdetail/659e54b1b8006379b4b2abd6?lang=zh&prompt=${encodeURIComponent(searchTerm)}`;
+            window.open(url, 'chatglm_search');
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                multiSearch();
+            }
+        });
+    </script>
+</body>
+</html>
