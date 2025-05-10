@@ -193,7 +193,7 @@
                 return;
             }
             copyAndNotify(searchTerm);  // 添加复制功能
-            const url = `https://chatgpt.com/?q=${encodeURIComponent(searchTerm)}&hints=search&ref=ext&from_all_in_one_search=true`;
+            const url = `https://chatgpt.com/?prompt=${encodeURIComponent(searchTerm)}&hints=search&ref=ext&from_all_in_one_search=true`;
             window.open(url, 'chatgpt_search');
         }
 

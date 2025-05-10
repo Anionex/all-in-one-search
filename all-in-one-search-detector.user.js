@@ -44,10 +44,19 @@
 
     // 粘贴文字到ChatGPT输入框
     function pasteTextToChatGPT() {
-        console.log("尝试粘贴文字到ChatGPT输入框");
+        console.log("尝试填充ChatGPT输入框");
         
-        // 确保窗口获得焦点
-        window.focus();
+        // 从URL中获取q参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchText = urlParams.get('prompt');
+        
+        if (!searchText) {
+            console.warn("URL中未找到搜索文本");
+            return;
+        }
+        
+        const decodedText = decodeURIComponent(searchText);
+        console.log("从URL获取到文本:", decodedText);
         
         // 等待输入框加载完成
         let attempts = 0;
@@ -64,62 +73,48 @@
                 console.log("找到ChatGPT输入框元素");
                 clearInterval(checkInterval);
                 
-                // 模拟点击激活输入框并确保获得焦点
                 try {
-                    window.focus();
-                    promptTextarea.click();
-                    promptTextarea.focus();
-                    console.log("已点击并聚焦输入框");
+                    // 设置内容 - 创建一个p标签并填入文本
+                    const pElement = document.createElement('p');
+                    pElement.textContent = decodedText;
                     
-                    // 短暂延迟后尝试读取剪贴板
+                    // 清空输入框并添加p元素
+                    promptTextarea.innerHTML = '';
+                    promptTextarea.appendChild(pElement);
+                    
+                    // 触发input事件，通知内容已更改
+                    const inputEvent = new Event('input', { bubbles: true });
+                    promptTextarea.dispatchEvent(inputEvent);
+                    
+                    // 等待内容确实更新后再按回车
                     setTimeout(() => {
-                        try {
-                            navigator.clipboard.readText().then(text => {
-                                if (text) {
-                                    console.log("读取到剪贴板文本:", text);
-                                    
-                                    // 设置内容 - 创建一个p标签并填入文本
-                                    const pElement = document.createElement('p');
-                                    pElement.textContent = text;
-                                    
-                                    // 清空输入框并添加p元素
-                                    promptTextarea.innerHTML = '';
-                                    promptTextarea.appendChild(pElement);
-                                    
-                                    console.log("已成功粘贴到ChatGPT输入框");
-                                    
-                                    // 触发input事件，通知内容已更改
-                                    const inputEvent = new Event('input', { bubbles: true });
-                                    promptTextarea.dispatchEvent(inputEvent);
-                                    
-                                    // 立即模拟回车键
-                                    const eventProps = {
-                                        key: 'Enter',
-                                        code: 'Enter',
-                                        keyCode: 13,
-                                        which: 13,
-                                        bubbles: true,
-                                        cancelable: true
-                                    };
-                                    
-                                    // 按顺序发送keydown、keypress和keyup事件
-                                    promptTextarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
-                                    promptTextarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
-                                    promptTextarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
-                                    
-                                    console.log("已模拟按下回车键");
-                                } else {
-                                    console.warn("剪贴板为空");
-                                }
-                            }).catch(err => {
-                                console.error("读取剪贴板失败:", err);
-                            });
-                        } catch (error) {
-                            console.error("粘贴操作失败:", error);
+                        // 验证内容是否已更新
+                        if (promptTextarea.textContent.trim() === decodedText.trim()) {
+                            console.log("确认内容已更新，准备按回车");
+                            
+                            // 模拟回车键
+                            const eventProps = {
+                                key: 'Enter',
+                                code: 'Enter',
+                                keyCode: 13,
+                                which: 13,
+                                bubbles: true,
+                                cancelable: true
+                            };
+                            
+                            promptTextarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
+                            promptTextarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
+                            promptTextarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
+                            
+                            console.log("已模拟按下回车键");
+                        } else {
+                            console.warn("内容未成功更新，不执行回车");
                         }
-                    }, 100); // 给予100ms让页面完全获得焦点
+                    }, 100);
+                    
+                    console.log("已成功填充ChatGPT输入框");
                 } catch (error) {
-                    console.error("点击输入框失败:", error);
+                    console.error("填充输入框失败:", error);
                 }
             } else if (attempts >= maxAttempts) {
                 console.warn("达到最大尝试次数，未找到ChatGPT输入框");
@@ -128,12 +123,21 @@
         }, 100);
     }
     
-    // 粘贴文字到ChatGLM输入框
+    // 填充ChatGLM输入框
     function pasteTextToChatGLM() {
-        console.log("尝试粘贴文字到ChatGLM输入框");
+        console.log("尝试填充ChatGLM输入框");
         
-        // 确保窗口获得焦点
-        window.focus();
+        // 从URL中获取prompt参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const promptText = urlParams.get('prompt');
+        
+        if (!promptText) {
+            console.warn("URL中未找到prompt参数");
+            return;
+        }
+        
+        const decodedText = decodeURIComponent(promptText);
+        console.log("从URL获取到文本:", decodedText);
         
         // 等待输入框加载完成
         let attempts = 0;
@@ -146,60 +150,44 @@
             const textarea = document.querySelector('textarea');
             
             if (textarea) {
-                console.log("找到ChatGLM输入框:", textarea);
+                console.log("找到ChatGLM输入框");
                 clearInterval(checkInterval);
                 
-                // 模拟点击激活输入框并确保获得焦点
                 try {
-                    window.focus();
-                    textarea.click();
-                    textarea.focus();
-                    console.log("已点击并聚焦输入框");
+                    // 设置文本内容
+                    textarea.value = decodedText;
                     
-                    // 短暂延迟后尝试读取剪贴板
+                    // 触发input事件
+                    const inputEvent = new Event('input', { bubbles: true });
+                    textarea.dispatchEvent(inputEvent);
+                    
+                    // 等待内容确实更新后再按回车
                     setTimeout(() => {
-                        try {
-                            navigator.clipboard.readText().then(text => {
-                                if (text) {
-                                    console.log("读取到剪贴板文本:", text);
-                                    
-                                    // 设置文本内容
-                                    textarea.value = text;
-                                    
-                                    // 触发input事件，通知textarea值已更改
-                                    const inputEvent = new Event('input', { bubbles: true });
-                                    textarea.dispatchEvent(inputEvent);
-                                    
-                                    console.log("已成功粘贴到ChatGLM输入框");
-                                    
-                                    // 立即模拟回车键
-                                    const eventProps = {
-                                        key: 'Enter',
-                                        code: 'Enter',
-                                        keyCode: 13,
-                                        which: 13,
-                                        bubbles: true,
-                                        cancelable: true
-                                    };
-                                    
-                                    // 按顺序发送keydown、keypress和keyup事件
-                                    textarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
-                                    textarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
-                                    textarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
-                                    
-                                    console.log("已模拟按下回车键");
-                                } else {
-                                    console.warn("剪贴板为空");
-                                }
-                            }).catch(err => {
-                                console.error("读取剪贴板失败:", err);
-                            });
-                        } catch (error) {
-                            console.error("粘贴操作失败:", error);
+                        if (textarea.value.trim() === decodedText.trim()) {
+                            console.log("确认内容已更新，准备按回车");
+                            
+                            const eventProps = {
+                                key: 'Enter',
+                                code: 'Enter',
+                                keyCode: 13,
+                                which: 13,
+                                bubbles: true,
+                                cancelable: true
+                            };
+                            
+                            textarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
+                            textarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
+                            textarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
+                            
+                            console.log("已模拟按下回车键");
+                        } else {
+                            console.warn("内容未成功更新，不执行回车");
                         }
-                    }, 100); // 给予100ms让页面完全获得焦点
+                    }, 100);
+                    
+                    console.log("已成功填充ChatGLM输入框");
                 } catch (error) {
-                    console.error("点击输入框失败:", error);
+                    console.error("填充输入框失败:", error);
                 }
             } else if (attempts >= maxAttempts) {
                 console.warn("达到最大尝试次数，未找到ChatGLM输入框");
