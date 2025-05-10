@@ -88,19 +88,29 @@
     <div class="preview-container">
         <div class="preview-card">
             <h3>MetaSo</h3>
-            <p>元搜索引擎，整合多个搜索源的结果</p>
+            <p>秘塔AI</p>
             <button class="preview-button" onclick="openMetaso()">打开 MetaSo</button>
         </div>
         <div class="preview-card">
             <h3>Perplexity</h3>
-            <p>AI 驱动的智能搜索引擎</p>
-            <button class="preview-button" onclick="openPerplexity()">打开 Perplexity</button>
+            <p>国外AI搜索引擎</p>
+            <button class="preview-button" onclick="openPerplexity()">用Perplexity搜索</button>
         </div>
         <div class="preview-card">
             <h3>ChatGLM</h3>
-            <p>智能对话模型</p>
-            <button class="preview-button" onclick="openChatGLM()">打开 ChatGLM</button>
+            <p>智谱AI</p>
+            <button class="preview-button" onclick="openChatGLM()">用ChatGLM搜索</button>
         </div>
+        <div class="preview-card">
+            <h3>ChatGPT</h3>
+            <p>OpenAI 开发的智能对话模型</p>
+            <button class="preview-button" onclick="openChatGPT()">用ChatGPT搜索</button>
+        </div>
+        <!-- <div class="preview-card">
+            <h3>纳米 AI</h3>
+            <p>360开发的AI搜索引擎</p>
+            <button class="preview-button" onclick="openNanoAI()">用纳米 AI 搜索</button>
+        </div> -->
     </div>
 
     <script>
@@ -129,7 +139,7 @@
         function multiSearch() {
             searchTerm = document.getElementById('searchInput').value;
             if (!searchTerm.trim()) {
-                alert('请输入搜索关键词！');
+                alert('请输入搜索内容！');
                 return;
             }
             
@@ -139,27 +149,63 @@
             setTimeout(openMetaso, 0);
             setTimeout(openPerplexity, 100);
             setTimeout(openChatGLM, 200);
+            setTimeout(openChatGPT, 300);
+            // setTimeout(openNanoAI, 400);
         }
 
         function openMetaso() {
-            if (!searchTerm.trim()) return;
+            searchTerm = document.getElementById('searchInput').value;
+            if (!searchTerm.trim()) {
+                alert('请输入搜索内容！');
+                return;
+            }
             copyAndNotify(searchTerm);  // 添加复制功能
             const url = `https://metaso.cn/?q=${encodeURIComponent(searchTerm)}`;
             window.open(url, 'metaso_search');
         }
 
         function openPerplexity() {
-            if (!searchTerm.trim()) return;
+            searchTerm = document.getElementById('searchInput').value;
+            if (!searchTerm.trim()) {
+                alert('请输入搜索内容！');
+                return;
+            }
             copyAndNotify(searchTerm);  // 添加复制功能
             const url = `https://www.perplexity.ai/?q=${encodeURIComponent(searchTerm)}&copilot=true`;
             window.open(url, 'perplexity_search');
         }
 
         function openChatGLM() {
-            if (!searchTerm.trim()) return;
+            searchTerm = document.getElementById('searchInput').value;
+            if (!searchTerm.trim()) {
+                alert('请输入搜索内容！');
+                return;
+            }
             copyAndNotify(searchTerm);  // 添加复制功能
-            const url = `https://chatglm.cn/main/gdetail/659e54b1b8006379b4b2abd6?lang=zh&prompt=${encodeURIComponent(searchTerm)}`;
+            const url = `https://chatglm.cn/main/gdetail/659e54b1b8006379b4b2abd6?lang=zh&prompt=${encodeURIComponent(searchTerm)}&from_all_in_one_search=true`;
             window.open(url, 'chatglm_search');
+        }
+
+        function openChatGPT() {
+            searchTerm = document.getElementById('searchInput').value;
+            if (!searchTerm.trim()) {
+                alert('请输入搜索内容！');
+                return;
+            }
+            copyAndNotify(searchTerm);  // 添加复制功能
+            const url = `https://chatgpt.com/?q=${encodeURIComponent(searchTerm)}&hints=search&ref=ext&from_all_in_one_search=true`;
+            window.open(url, 'chatgpt_search');
+        }
+
+        function openNanoAI() {
+            searchTerm = document.getElementById('searchInput').value;
+            if (!searchTerm.trim()) {
+                alert('请输入搜索内容！');
+                return;
+            }
+            copyAndNotify(searchTerm);  // 添加复制功能
+            const url = `https://www.n.cn/?q=${encodeURIComponent(searchTerm)}`;
+            window.open(url, 'nanoai_search');
         }
 
         document.getElementById('searchInput').addEventListener('keypress', function(event) {
