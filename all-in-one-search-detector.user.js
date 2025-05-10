@@ -45,73 +45,69 @@
     // 粘贴文字到ChatGPT输入框
     function pasteTextToChatGPT() {
         console.log("尝试粘贴文字到ChatGPT输入框");
-
+        
+        // 确保窗口获得焦点
+        window.focus();
+        
         // 等待输入框加载完成
         let attempts = 0;
         const maxAttempts = 20; // 最多尝试20次
-
+        
         const checkInterval = setInterval(() => {
             attempts++;
             console.log(`寻找ChatGPT输入框，尝试次数: ${attempts}`);
-
+            
             // 直接查找ChatGPT的输入框元素
             const promptTextarea = document.getElementById('prompt-textarea');
-
+            
             if (promptTextarea) {
                 console.log("找到ChatGPT输入框元素");
                 clearInterval(checkInterval);
-
-                // 模拟点击激活输入框
+                
+                // 模拟点击激活输入框并确保获得焦点
                 try {
+                    window.focus();
                     promptTextarea.click();
                     promptTextarea.focus();
                     console.log("已点击并聚焦输入框");
-
-                    // 从剪贴板获取文本并粘贴
+                    
+                    // 短暂延迟后尝试读取剪贴板
                     setTimeout(() => {
                         try {
                             navigator.clipboard.readText().then(text => {
                                 if (text) {
                                     console.log("读取到剪贴板文本:", text);
-
+                                    
                                     // 设置内容 - 创建一个p标签并填入文本
                                     const pElement = document.createElement('p');
                                     pElement.textContent = text;
-
+                                    
                                     // 清空输入框并添加p元素
                                     promptTextarea.innerHTML = '';
                                     promptTextarea.appendChild(pElement);
-
+                                    
                                     console.log("已成功粘贴到ChatGPT输入框");
-
+                                    
                                     // 触发input事件，通知内容已更改
                                     const inputEvent = new Event('input', { bubbles: true });
                                     promptTextarea.dispatchEvent(inputEvent);
-
-                                    // 延迟一下再模拟回车键
-                                    setTimeout(() => {
-                                        try {
-                                            // 模拟完整的键盘事件序列
-                                            const eventProps = {
-                                                key: 'Enter',
-                                                code: 'Enter',
-                                                keyCode: 13,
-                                                which: 13,
-                                                bubbles: true,
-                                                cancelable: true
-                                            };
-
-                                            // 按顺序发送keydown、keypress和keyup事件
-                                            promptTextarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
-                                            promptTextarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
-                                            promptTextarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
-
-                                            console.log("已模拟按下回车键");
-
-                                        } catch (error) {
-                                            console.error("模拟回车键失败:", error);
-                                        }
-                                    }, 1000);
+                                    
+                                    // 立即模拟回车键
+                                    const eventProps = {
+                                        key: 'Enter',
+                                        code: 'Enter',
+                                        keyCode: 13,
+                                        which: 13,
+                                        bubbles: true,
+                                        cancelable: true
+                                    };
+                                    
+                                    // 按顺序发送keydown、keypress和keyup事件
+                                    promptTextarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
+                                    promptTextarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
+                                    promptTextarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
+                                    
+                                    console.log("已模拟按下回车键");
                                 } else {
                                     console.warn("剪贴板为空");
                                 }
@@ -121,7 +117,7 @@
                         } catch (error) {
                             console.error("粘贴操作失败:", error);
                         }
-                    }, 500);
+                    }, 100); // 给予100ms让页面完全获得焦点
                 } catch (error) {
                     console.error("点击输入框失败:", error);
                 }
@@ -129,73 +125,69 @@
                 console.warn("达到最大尝试次数，未找到ChatGPT输入框");
                 clearInterval(checkInterval);
             }
-        }, 500);
+        }, 100);
     }
-
+    
     // 粘贴文字到ChatGLM输入框
     function pasteTextToChatGLM() {
         console.log("尝试粘贴文字到ChatGLM输入框");
-
+        
+        // 确保窗口获得焦点
+        window.focus();
+        
         // 等待输入框加载完成
         let attempts = 0;
         const maxAttempts = 20; // 最多尝试20次
-
+        
         const checkInterval = setInterval(() => {
             attempts++;
             console.log(`寻找ChatGLM输入框，尝试次数: ${attempts}`);
-
+            
             const textarea = document.querySelector('textarea');
-
+            
             if (textarea) {
                 console.log("找到ChatGLM输入框:", textarea);
                 clearInterval(checkInterval);
-
-                // 模拟点击激活输入框
+                
+                // 模拟点击激活输入框并确保获得焦点
                 try {
+                    window.focus();
                     textarea.click();
                     textarea.focus();
                     console.log("已点击并聚焦输入框");
-
-                    // 从剪贴板获取文本并粘贴
+                    
+                    // 短暂延迟后尝试读取剪贴板
                     setTimeout(() => {
                         try {
                             navigator.clipboard.readText().then(text => {
                                 if (text) {
                                     console.log("读取到剪贴板文本:", text);
-
+                                    
                                     // 设置文本内容
                                     textarea.value = text;
-
+                                    
                                     // 触发input事件，通知textarea值已更改
                                     const inputEvent = new Event('input', { bubbles: true });
                                     textarea.dispatchEvent(inputEvent);
-
+                                    
                                     console.log("已成功粘贴到ChatGLM输入框");
-
-                                    // 延迟一下再模拟回车键
-                                    setTimeout(() => {
-                                        try {
-                                            // 模拟完整的键盘事件序列
-                                            const eventProps = {
-                                                key: 'Enter',
-                                                code: 'Enter',
-                                                keyCode: 13,
-                                                which: 13,
-                                                bubbles: true,
-                                                cancelable: true
-                                            };
-
-                                            // 按顺序发送keydown、keypress和keyup事件
-                                            textarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
-                                            textarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
-                                            textarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
-
-                                            console.log("已模拟按下回车键");
-
-                                        } catch (error) {
-                                            console.error("模拟回车键失败:", error);
-                                        }
-                                    }, 1000);
+                                    
+                                    // 立即模拟回车键
+                                    const eventProps = {
+                                        key: 'Enter',
+                                        code: 'Enter',
+                                        keyCode: 13,
+                                        which: 13,
+                                        bubbles: true,
+                                        cancelable: true
+                                    };
+                                    
+                                    // 按顺序发送keydown、keypress和keyup事件
+                                    textarea.dispatchEvent(new KeyboardEvent('keydown', eventProps));
+                                    textarea.dispatchEvent(new KeyboardEvent('keypress', eventProps));
+                                    textarea.dispatchEvent(new KeyboardEvent('keyup', eventProps));
+                                    
+                                    console.log("已模拟按下回车键");
                                 } else {
                                     console.warn("剪贴板为空");
                                 }
@@ -205,7 +197,7 @@
                         } catch (error) {
                             console.error("粘贴操作失败:", error);
                         }
-                    }, 500);
+                    }, 100); // 给予100ms让页面完全获得焦点
                 } catch (error) {
                     console.error("点击输入框失败:", error);
                 }
@@ -213,7 +205,7 @@
                 console.warn("达到最大尝试次数，未找到ChatGLM输入框");
                 clearInterval(checkInterval);
             }
-        }, 500);
+        }, 100);
     }
 
     // 页面加载完成后检查URL
